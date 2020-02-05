@@ -18,6 +18,10 @@ class Map extends React.Component {
       demonym: "",
       timeZone: [],
       flag: ""
+    },
+    coordinates: {
+      x: 0,
+      y: 0
     }
   };
   Viewer = null;
@@ -71,6 +75,11 @@ class Map extends React.Component {
       height: 148
     }
 
+    let svgCardSize = {
+      width: 350,
+      height:  500
+    }
+
     return (
       <MapWrapper>
         <div id="mapSvg">
@@ -82,14 +91,18 @@ class Map extends React.Component {
                 background="#ffffff"
                 ref={Viewer => (this.Viewer = Viewer)}
                 miniatureProps={miniaturePropsValues}
-                // onClick={event =>{ 
+                scaleFactorMin={1}
+                scaleFactorMax={3}
+                detectAutoPan={false}
+                onClick={event =>
+                  this.setState({coordinates: {x: event.x, y: event.y}})
                 //   console.log("click", event.x, event.y, event.originalEvent)
                 //   console.log(event.SVGViewer)
                 // }
-                // }
+                }
               >
                 <svg width={1010} height={666}>
-                  <MapSvg onClick={handleCountryClick} />
+                  <MapSvg onClick={handleCountryClick} countryData={this.state.country} coordinates={this.state.coordinates} size={svgCardSize} />
                 </svg>
                 {/* <MapSvg width={1010} height={666} /> */}
               </UncontrolledReactSVGPanZoom>
@@ -102,9 +115,9 @@ class Map extends React.Component {
           handleZoomIn={handleZoomIn}
           handleZoomOut={handleZoomOut}
         />
-        {this.state.country.name !== "" &&
+        {/* {this.state.country.name !== "" &&
           <CountryDetails countryData={this.state.country}/>
-        }
+        } */}
       </MapWrapper>
     );
   }
@@ -137,6 +150,19 @@ const MapWrapper = styled.div`
           right: 70px !important;
           bottom: 20px !important;
         }
+      }
+      .svgDataCard{
+        border: solid 1px black;
+        background: #fff;
+
+        img{
+          max-width: 100%;
+        }
+      }
+    }
+    div[role="navigation"]{
+      .svgDataCard, button[type="button"]{
+        display: none !important;
       }
     }
   }
